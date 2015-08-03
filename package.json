@@ -1,0 +1,46 @@
+{
+  "name": "grunt-sasslint",
+  "description": "Lint SCSS files with Sasslint.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/dfurnes/grunt-sasslint",
+  "author": {
+    "name": "David Furnes",
+    "email": "david@dfurnes.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dfurnes/grunt-sasslint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dfurnes/grunt-sasslint/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/dfurnes/grunt-sasslint/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.9.2",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt": "~0.4.5"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "dependencies": {
+    "find-parent-dir": "^0.3.0",
+    "lodash": "^3.10.0",
+    "sasslint": "0.0.5"
+  }
+}
