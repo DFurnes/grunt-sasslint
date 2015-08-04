@@ -41,6 +41,6 @@
   "dependencies": {
     "find-parent-dir": "^0.3.0",
     "lodash": "^3.10.0",
-    "sasslint": "0.0.5"
+    "sasslint": "0.0.6"
   }
 }

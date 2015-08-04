@@ -8,8 +8,8 @@
 
 'use strict';
 
-var Runner = require('sasslint');
-var DefaultReporter = require('sasslint/lib/Reporters/DefaultReporter');
+var Runner = require('sasslint').Runner;
+var DefaultReporter = require('sasslint').DefaultReporter;
 var findParentDir = require('find-parent-dir');
 var map = require('lodash/collection/map');
 var path = require('path');
@@ -32,10 +32,12 @@ module.exports = function(grunt) {
       config: false,
     });
 
+    var reporter = new DefaultReporter();
+
     // Iterate over all specified file groups.
     this.files.forEach(function(f) {
       // Concat specified files.
-      var src = f.src.filter(function(filepath) {
+      var expandedPaths = f.src.filter(function(filepath) {
         // Warn on and remove invalid source files (if nonull was set).
         if (!grunt.file.exists(filepath)) {
           grunt.log.warn('Source file "' + filepath + '" not found.');
@@ -43,7 +45,9 @@ module.exports = function(grunt) {
         } else {
           return true;
         }
-      }).map(function(filepath) {
+      });
+
+      var source = expandedPaths.map(function(filepath) {
         // Read file source.
         return grunt.file.read(filepath);
       });
@@ -53,19 +57,22 @@ module.exports = function(grunt) {
        */
       var config = {};
       if(options.config) {
-        var configFile = path.resolve(program.config);
+        var configFile = path.resolve(options.config);
 
         // The file must exist!
         if(!fs.existsSync(configFile)) {
-          grunt.log.warn('Config file "' + configFile + '" not found.');
+          grunt.log.exit('Config file "' + configFile + '" not found.');
           process.exit(1);
         }
 
-        config = fs.readFileSync(configFile, 'utf-8');
+        config = JSON.parse(fs.readFileSync(configFile, 'utf-8'));
       } else {
-        var dir = findParentDir.sync(path.dirname(f.orig.src), '.sasslint.json');
+        var dir = findParentDir.sync(process.cwd(), '.sasslint.json');
         if(dir) {
           config = JSON.parse(fs.readFileSync(dir + '/.sasslint.json', 'utf-8'));
+        } else {
+          grunt.log.error('Config file not found.');
+          process.exit(1);
         }
       }
 
@@ -73,22 +80,25 @@ module.exports = function(grunt) {
        * Run Sasslint!
        */
       var runner = new Runner(config);
-      var lints = map(src, function(sass) {
+      var lints = map(source, function(sass) {
         return runner.lint(sass, options);
       });
 
 
       lints.forEach(function(lint) {
-        var reporter = new DefaultReporter(lint, f.src[0]);
-        reporter.report();
+        if(lint.length) {
+          reporter.report(lint, f.src[0]);
+        }
 
         if(lint.length) hadErrors = true;
       });
-
-      if(hadErrors) {
-        grunt.fail.warn('Sasslint found some style mistakes in your code.');
-      }
     });
+
+    reporter.summarize();
+
+    if(hadErrors) {
+      grunt.fail.warn('Sasslint found some style mistakes in your code.');
+    }
   });
 
 };
