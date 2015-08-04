@@ -85,9 +85,9 @@ module.exports = function(grunt) {
       });
 
 
-      lints.forEach(function(lint) {
+      lints.forEach(function(lint, index) {
         if(lint.length) {
-          reporter.report(lint, f.src[0]);
+          reporter.report(lint, f.src[index]);
         }
 
         if(lint.length) hadErrors = true;
