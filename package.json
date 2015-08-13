@@ -1,7 +1,7 @@
 {
   "name": "grunt-sasslint",
   "description": "Lint SCSS files with Sasslint.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/dfurnes/grunt-sasslint",
   "author": {
     "name": "David Furnes",
